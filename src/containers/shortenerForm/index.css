@@ -1,0 +1,19 @@
+.form-bar {
+  background-color: #366ed1;
+  color: white;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+}
+
+.form-header {
+  font-weight: lighter;
+  color: white;
+  line-height: 1.54
+}
+
+.form {
+  padding: 24px 0;
+}
+
+.form-submit-button {
+
+}
