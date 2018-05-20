@@ -1,8 +1,11 @@
 import React from 'react';
 import './index.css';
+import { connect } from 'react-redux';
 
 import URLInput from '../../components/url_input/index.js';
+import DataTable from '../../components/dataTable/index.js';
 import API from '../../API/index.js';
+import responseFlags from '../../constants/responseFlags.js';
 
 const initialURLList = [{
   name: 'long_url_0',
@@ -16,6 +19,7 @@ const initialURLList = [{
 class ShortenerForm extends React.Component {
   constructor(props) {
     super(props);
+    this.signOut = this.signOut.bind(this);
     this.state = {
       url_list: initialURLList,
       api_error: null
@@ -70,22 +74,55 @@ class ShortenerForm extends React.Component {
     this.setState(newState);
   }
 
+  signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    let self = this;
+    auth2.signOut().then(function () {
+      self.props.dispatch(logoutSuccess());
+      window.dispatchEvent(new Event('logged-out'));
+    });
+  }
+
   submitForm() {
     event.preventDefault();
-    API.shortenURL(this.state.url_list).then((response) => {
-      console.log(response);
-      $('#myModal').modal('show');
-      this.setState({url_list: [{
-        name: 'long_url_0',
-        key: 0,
-        value: '',
-        can_close: false,
-        show_validation_error: true,
-        error: null
-      }], response: response});
+    let self = this;
+    API.shortenURL(this.state.url_list, this.props.user.access_token).then((response) => {
+      console.log(response.data);
+      if(response.data.flag == responseFlags.SUCCESS) {
+        self.handleSuccessResponse(response.data);
+      } else if(response.data.flag === responseFlags.INVALID_ACCESS_TOKEN){
+        this.signOut();
+      } else {
+        console.log(response);
+      }
     }).catch((err) => {
-      this.setState({...this.state, api_error: err.message});
+      if(err.response.status == 404 && err.response.data.flag == responseFlags.CONTAINS_INVALID_URLs) {
+        this.setState({...this.state, api_error: 'Please enter valid URLs'});
+      } else if(err.response.status == 403 && err.response.data.flag == responseFlags.INVALID_ACCESS_TOKEN){
+        this.signOut();
+      } else {
+        this.setState({...this.state, api_error: err.message});
+      }
     });
+  }
+
+  handleSuccessResponse(response) {
+    $('#responseModal').modal('show');
+
+    this.setState({
+        url_list: [{
+          name: 'long_url_0',
+          key: 0,
+          value: '',
+          can_close: false,
+          show_validation_error: true,
+          error: null,
+          api_error: null
+      }],
+      response_data: response.data
+    });
+
+    window.dispatchEvent(new Event('history-updated'));
   }
 
   getInputFields() {
@@ -98,7 +135,6 @@ class ShortenerForm extends React.Component {
               name={element.name}
               index={element.key}
               value={element.value}
-              class='form-control'
               type='text'
               placeholder='Type your input here'
               error={element.error}
@@ -117,9 +153,13 @@ class ShortenerForm extends React.Component {
       return elementHtml;
     });
 
-    document.push(<div class="row">
-      <button class="btn btn-default" onClick={self.addNewInput.bind(self)}>+Add</button>
-    </div>);
+    document.push(
+      <div class="row">
+        <div class="col-md-1">
+          <button class="btn btn-default add-button" onClick={self.addNewInput.bind(self)}>+Add</button>
+        </div>
+      </div>
+    );
 
     return document;
   }
@@ -127,48 +167,61 @@ class ShortenerForm extends React.Component {
   render() {
     return (
       <div>
-      <div className="form">
-        <div className="row">
-          <div className="col-md-12">
-            <h1 className="form-header">Simplify your links</h1>
+        <div className="form">
+          <div className="row">
+            <div className="col-md-12">
+              <h1 className="form-header">Simplify your links</h1>
+            </div>
+            <div class="error">
+              <h6>{this.state.api_error}</h6>
+            </div>
           </div>
-          <div class="error">
-            {this.state.api_error}
+
+          {this.getInputFields()}
+
+          <div class="row form-submit">
+            <div className="col-md-2 col-xs-2 col-lg-2">
+              <button type="submit" className="btn btn-default form-submit-button" onClick={this.submitForm.bind(this)}>SHORTEN URL</button>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div id="responseModal" className="modal fade" role="dialog">
+          <div className="modal-dialog">
+
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title">Your Short URLs</h4>
+              </div>
+              <div className="modal-body">
+                <DataTable data={this.state.response_data} headers={[{name: 'Original URL', key_name: 'long_url'}, {name: 'Short URL', type: 'copy', key_name: 'short_url'}]}/>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {this.getInputFields()}
-
-        <div class="row">
-          <div className="col-md-4 col-xs-4 col-lg-4">
-            <button type="submit" className="btn btn-default form-submit-button" onClick={this.submitForm.bind(this)}>SHORTEN URL</button>
-          </div>
-        </div>
 
       </div>
-
-
-      <div id="myModal" className="modal fade" role="dialog">
-        <div className="modal-dialog">
-
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal">&times;</button>
-              <h4 className="modal-title">Modal Header</h4>
-            </div>
-            <div className="modal-body">
-              <p>Some text in the modal.</p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-</div>
     );
   }
 }
 
-export default ShortenerForm;
+function mapStateToProps(state) {
+  return {
+    user: state.user
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch: dispatch
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShortenerForm);

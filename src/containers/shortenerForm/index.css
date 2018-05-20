@@ -7,17 +7,36 @@
 .form-header {
   font-weight: lighter;
   color: white;
-  line-height: 1.54
+  line-height: 1.54;
+  font-family: Roboto,Helvetica,Arial,sans-serif;
+  font-size: 1.5rem;
+  margin: 0;
+  user-select: none;
+  padding: 12px 0;
 }
 
 .form {
   padding: 24px 0;
 }
 
-.form-submit-button {
+.form-submit {
+  padding: 1.5rem 0;
+}
 
+.form-submit-button {
+  border-radius: 2px;
 }
 
 .close {
   color: white;
+}
+
+#responseModal {
+  color: black;
+}
+
+.add-button {
+  color: #039be5;
+  font-weight: 500;
+  border-radius: 2px;
 }

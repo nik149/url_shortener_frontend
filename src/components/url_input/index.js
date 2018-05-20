@@ -14,7 +14,7 @@ class URLInput extends React.Component {
         <div className="col-md-12 form-group ">
           <input
             type={this.props.type}
-            className={this.props.class}
+            className='form-control url-input'
             name={this.props.name}
             index={this.props.index}
             placeholder={this.props.placeholder}

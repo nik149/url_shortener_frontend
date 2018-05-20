@@ -1,30 +1,44 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from './src/reducers/store.js';
 import ShortenerForm from './src/containers/shortenerForm/index.js';
+import UserInfoSection from './src/containers/userInfoSection/index.js';
+import HistoryTable from './src/containers/historyTable/index.js';
+import SignInModal from './src/containers/signInModal/index.js';
+
 import './App.css';
 
 class App extends React.Component {
+   constructor(props) {
+    super(props);
+   }
+
    render() {
       return (
-        <div class="body">
-          <nav className="navbar navbar-expand-lg navbar-light">
-           <div className="container">
-             <a href="#" className="navbar-brand">URL Shortener</a>
-
-             <div className="collapse navbar-collapse">
-             <ul className="navbar-nav d-none d-lg-flex ml-2 order-3">
-               <li className="nav-item"><a className="nav-link" href="#">Sign in</a></li>
-               <li className="nav-item"><a className="nav-link" href="#">Sign up</a></li>
-             </ul>
+        <Provider store={store}>
+          <div class="body">
+            <SignInModal />
+            <nav className="navbar navbar-expand-lg navbar-light">
+             <div className="container-fluid">
+               <div class="container">
+                 <a href="#" className="navbar-brand">URL Shortener</a>
+               </div>
+               <UserInfoSection />
              </div>
-           </div>
-          </nav>
+            </nav>
 
-          <div className="container-fluid form-bar">
-          <div className="container">
-            <ShortenerForm />
+            <div className="container-fluid form-bar">
+            <div className="container">
+              <ShortenerForm />
+            </div>
+            </div>
+
+            <div class="container history-table">
+              <HistoryTable />
+            </div>
+
           </div>
-          </div>
-        </div>
+        </Provider>
       );
    }
 }
