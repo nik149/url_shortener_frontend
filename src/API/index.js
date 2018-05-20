@@ -1,4 +1,4 @@
-import {shortenURL} from './shortenURL';
+import {shortenURL} from './shortenUrl';
 import {createUserSession} from './userLogin';
 import {fetchUserHistoryData} from './userHistory';
 
