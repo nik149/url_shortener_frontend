@@ -4,6 +4,7 @@ import './index.css';
 import { loginSuccess, logoutSuccess } from '../../actions/userLogin.js';
 import API from '../../API/index.js';
 import responseFlags from '../../constants/responseFlags.js';
+import creds from '../../constants/creds.js';
 
 class SignInModal extends React.Component {
   constructor(props) {
@@ -30,8 +31,9 @@ class SignInModal extends React.Component {
 
   initializeGoogleLogin() {
     let self = this;
+    console.log("Creds: ", creds);
     gapi.auth2.init({
-      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_id: creds.GOOGLE_CLIENT_ID,
       fetch_basic_profile: true,
       scope: 'profile'
     }).then(function(){
