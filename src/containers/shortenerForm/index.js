@@ -115,10 +115,10 @@ class ShortenerForm extends React.Component {
           value: '',
           can_close: false,
           show_validation_error: true,
-          error: null,
-          api_error: null
+          error: null
       }],
-      response_data: response.data
+      response_data: response.data,
+      api_error: null
     });
 
     window.dispatchEvent(new Event('history-updated'));
