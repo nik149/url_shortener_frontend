@@ -61,7 +61,7 @@ class ShortenerForm extends React.Component {
     let value = event.target.value;
     let errorMessage = null
     if(!this.isValidURL(value)) {
-      errorMessage = 'Please enter correct URL'
+      errorMessage = 'Please enter correct URL format (http://www.example.com)'
     }
 
     let newState = this.state.url_list.map(function(element) {
@@ -172,8 +172,11 @@ class ShortenerForm extends React.Component {
             <div className="col-md-12">
               <h1 className="form-header">Simplify your links</h1>
             </div>
-            <div class="error">
-              <h6>{this.state.api_error}</h6>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12 error">
+              <h6 className="error-message">{this.state.api_error}</h6>
             </div>
           </div>
 
