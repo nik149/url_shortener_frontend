@@ -191,7 +191,7 @@ class ShortenerForm extends React.Component {
 
 
         <div id="responseModal" className="modal fade" role="dialog">
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-lg">
 
             <div className="modal-content">
               <div className="modal-header">
