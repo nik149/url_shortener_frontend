@@ -57,7 +57,7 @@ class SignInModal extends React.Component {
   onSignIn(googleUser) {
     let accessToken = googleUser.getAuthResponse().id_token;
     let profile = googleUser.getBasicProfile();
-
+    
     let userInfo = {
       access_token: accessToken,
       profile: {

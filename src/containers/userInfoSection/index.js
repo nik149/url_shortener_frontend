@@ -19,6 +19,15 @@ class UserInfoSection extends React.Component {
     });
   }
 
+  copyAccessToken() {
+    const el = document.createElement('textarea');
+    el.value = this.props.user.access_token;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+
   render() {
     if(this.props.user.logged_in) {
       return (
@@ -28,6 +37,7 @@ class UserInfoSection extends React.Component {
               {this.props.user.profile.name}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+              <a class="dropdown-item" href="#" onClick={this.copyAccessToken.bind(this)}>Copy Access Token</a>
               <a class="dropdown-item" href="#" onClick={this.signOut.bind(this)}>Sign Out</a>
             </div>
           </li>
