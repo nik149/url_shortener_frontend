@@ -3,7 +3,7 @@ import './index.css';
 import DataTable from '../../components/dataTable/index.js';
 import API from '../../API/index.js';
 import responseFlags from '../../constants/responseFlags.js';
-import { historyDataFetched, fetchNextData, fetchPrevData } from '../../actions/history.js';
+import { historyDataFetched, fetchNextData, fetchPrevData, resetHistoryData } from '../../actions/history.js';
 
 import { connect } from 'react-redux';
 
@@ -19,13 +19,15 @@ class HistoryTable extends React.Component {
   }
 
   componentDidUpdate() {
-    if(!this.props.history.fetched) {
+    if(!this.props.history.fetched && this.props.user.logged_in) {
       this.fetchData();
+    }
+    if(!this.props.user.logged_in && this.props.history.fetched) {
+      this.resetData();
     }
   }
 
   onNextClick() {
-    console.log("On Next Click Called");
     this.props.dispatch(fetchNextData());
   }
 
@@ -37,17 +39,20 @@ class HistoryTable extends React.Component {
     API.fetchUserHistoryData(this.props.history.current_link, this.props.user.access_token)
     .then(response => {
       if(response.data.flag === responseFlags.SUCCESS) {
-        console.log("History Response: ", response.data);
         this.props.dispatch(historyDataFetched(response.data));
       } else if(response.data.flag === responseFlags.INVALID_ACCESS_TOKEN){
         this.signOut();
       } else {
-        console.log(response);
+        alert("Something went wrong.");
       }
     })
     .catch(error => {
-      console.log(error);
+      alert("Something went wrong.");
     });
+  }
+
+  resetData() {
+    this.props.dispatch(resetHistoryData());
   }
 
   signOut() {

@@ -19,13 +19,15 @@ function historyReducer(state=initialHistoryState, action) {
         total_pages: action.payload.total_pages,
         fetched: true
       };
-      console.log("Data Fetched State: ", state);
       return state;
     case 'FETCH_NEXT_DATA':
       state = {...state, fetched: false, current_link: state.next_link};
       return state;
     case 'FETCH_PREV_DATA':
       state = {...state, fetched: false, current_link: state.prev_link};
+      return state;
+    case 'RESET_DATA':
+      state = initialHistoryState;
       return state;
   }
   return state;

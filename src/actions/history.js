@@ -22,3 +22,9 @@ export function fetchPrevData() {
     type: 'FETCH_PREV_DATA'
   };
 }
+
+export function resetHistoryData() {
+  return {
+    type: 'RESET_DATA'
+  };
+}

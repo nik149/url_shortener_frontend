@@ -87,13 +87,12 @@ class ShortenerForm extends React.Component {
     event.preventDefault();
     let self = this;
     API.shortenURL(this.state.url_list, this.props.user.access_token).then((response) => {
-      console.log(response.data);
       if(response.data.flag == responseFlags.SUCCESS) {
         self.handleSuccessResponse(response.data);
       } else if(response.data.flag === responseFlags.INVALID_ACCESS_TOKEN){
         this.signOut();
       } else {
-        console.log(response);
+        alert('Not handled.');
       }
     }).catch((err) => {
       if(err.response.status == 404 && err.response.data.flag == responseFlags.CONTAINS_INVALID_URLs) {
@@ -173,7 +172,7 @@ class ShortenerForm extends React.Component {
               <h1 className="form-header">Simplify your links</h1>
             </div>
           </div>
-          
+
           <div class="row">
             <div class="col-md-12 error">
               <h6 className="error-message">{this.state.api_error}</h6>

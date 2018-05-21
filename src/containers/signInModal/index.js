@@ -86,7 +86,6 @@ class SignInModal extends React.Component {
 
   onFailure() {
     //TODO: implement toastr
-    console.log("Sign In Failed");
   }
 
   signOut() {
@@ -94,7 +93,6 @@ class SignInModal extends React.Component {
     let self = this;
     auth2.signOut().then(function () {
       self.props.dispatch(logoutSuccess());
-      window.dispatchEvent(new Event('logged-out'));
     });
   }
 
