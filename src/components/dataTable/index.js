@@ -9,6 +9,16 @@ const timeAgo = new TimeAgo('en-US')
 class DataTable extends React.Component {
   constructor(props) {
     super(props);
+    // this.copyToClipboard = this.copyToClipboard.bind(this);
+  }
+
+  copyToClipboard(text) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
   }
 
   buildHeaders(headers) {
@@ -33,16 +43,19 @@ class DataTable extends React.Component {
               return (
                 <td class="table-row-cell">
                   {row[header.key_name]}
-                  <button class="copy-icon"><i class="far fa-copy"></i></button>
+                  <button class="copy-icon" onClick={() => {this.copyToClipboard(row[header.key_name])}}><i class="far fa-copy"></i></button>
                 </td>
               )
             } else if (header.type =='time') {
-              console.log(timeAgo.format(new Date(row[header.key_name])))
               return (
                 <td class="table-row-cell">
                   {timeAgo.format(new Date(row[header.key_name]))}
                 </td>
               )
+            } else if (header.type == 'link') {
+              return (<td class="table-row-cell">
+                <a href={row[header.key_name]} target='_blank' class='link'>{row[header.key_name]}</a>
+              </td>);
             } else {
               return (
                 <td class="table-row-cell">

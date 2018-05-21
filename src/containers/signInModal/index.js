@@ -31,7 +31,6 @@ class SignInModal extends React.Component {
 
   initializeGoogleLogin() {
     let self = this;
-    console.log("Creds: ", creds);
     gapi.auth2.init({
       client_id: creds.GOOGLE_CLIENT_ID,
       fetch_basic_profile: true,
